@@ -12,7 +12,10 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
+
 import com.sun.glass.events.KeyEvent;
+
+
 import Modelos.Data;
 //import Modelos.PKCS12;        
 
@@ -82,6 +85,10 @@ public class Ventana extends JFrame implements ActionListener
 	    scrollPane = new JScrollPane();
 	    table = new JTable();
 	    table.setModel(sql.select());
+	    
+	    table.setDefaultRenderer(Object.class, new Render());
+
+	
 	    scrollPane.setViewportView(table);
 	    getContentPane().add(scrollPane, BorderLayout.CENTER);
 	    
@@ -133,6 +140,7 @@ public class Ventana extends JFrame implements ActionListener
     		try
     		{
     			table.setModel(sql.select());
+    			
     		}
     		catch ( Exception e1)
     		{
@@ -174,4 +182,7 @@ public class Ventana extends JFrame implements ActionListener
        
     
 }
+
+
+
 

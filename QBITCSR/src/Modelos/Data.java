@@ -120,13 +120,13 @@ public class Data
 	
 		java.sql.ResultSetMetaData rsmd = rs.getMetaData();
 		int colNo = rsmd.getColumnCount();
-		while(rs.next()){
-		 Object[] objects = new Object[colNo];
-		 
-		 for(int i=0;i<colNo;i++){
-		  objects[i]=rs.getObject(i+1);
-		  }
-		 aModel.addRow(objects);
+		while(rs.next())
+		{
+			Object[] objects = new Object[colNo];
+			for(int i=0;i<colNo;i++){
+			objects[i]=rs.getObject(i+1);
+		}
+		aModel.addRow(objects);
 		}
 		return aModel;
 	}
