@@ -2,13 +2,12 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Desar/wspace/QBITCSR/src/Extras/bcmail-jdk15on-152.jar"/>
-	<classpathentry kind="lib" path="C:/Desar/wspace/QBITCSR/src/Extras/bcpg-jdk15on-152.jar"/>
-	<classpathentry kind="lib" path="C:/Desar/wspace/QBITCSR/src/Extras/bcpkix-jdk15on-152.jar"/>
-	<classpathentry kind="lib" path="C:/Desar/wspace/QBITCSR/src/Extras/bcprov-ext-jdk15on-152.jar"/>
-	<classpathentry kind="lib" path="C:/Desar/wspace/QBITCSR/src/Extras/bouncy.jar"/>
-	<classpathentry kind="lib" path="C:/Desar/wspace/QBITCSR/src/Extras/commons-codec-1.10.jar"/>
-	<classpathentry kind="lib" path="C:/Desar/wspace/QBITCSR/src/Extras/rt.jar"/>
-	<classpathentry kind="lib" path="C:/Desar/wspace/QBITCSR/src/Extras/sqlite-jdbc-3.8.11.2.jar"/>
+	<classpathentry kind="lib" path="C:/git/QBITCSR/src/Extras/bcmail-jdk15on-152.jar"/>
+	<classpathentry kind="lib" path="C:/git/QBITCSR/src/Extras/bcpg-jdk15on-152.jar"/>
+	<classpathentry kind="lib" path="C:/git/QBITCSR/src/Extras/bcpkix-jdk15on-152.jar"/>
+	<classpathentry kind="lib" path="C:/git/QBITCSR/src/Extras/bcprov-ext-jdk15on-152.jar"/>
+	<classpathentry kind="lib" path="C:/git/QBITCSR/src/Extras/bouncy.jar"/>
+	<classpathentry kind="lib" path="C:/git/QBITCSR/src/Extras/commons-codec-1.10.jar"/>
+	<classpathentry kind="lib" path="C:/git/QBITCSR/src/Extras/sqlite-jdbc-3.8.11.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
