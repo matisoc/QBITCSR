@@ -9,12 +9,12 @@ import java.security.SecureRandom;
 import java.security.Security;
 import sun.misc.BASE64Encoder;
 
-public class KEY 
+public class pKey 
 {
 	private String privateKey;
 	private String publicKey;
 	
-	public KEY()
+	public pKey()
 	{
 		privateKey = "";
 		publicKey = "";

@@ -24,7 +24,7 @@ public class PEM {
     
 	private String dato, archivo, compania, csrPEMEncoded;
 	private KeyPair keypair;
-	private KEY clave;
+	private pKey clave;
 	private X500Name x500Name;
 	private final String algorithm = "SHA1WithRSA";
 	private Signature signature;
@@ -41,7 +41,7 @@ public class PEM {
     public boolean generarCertif() throws IOException, InvalidKeyException, SignatureException, NoSuchAlgorithmException, NoSuchProviderException 
     {	
     	
-    	clave = new KEY();
+    	clave = new pKey();
         keypair = clave.generateKeyPair();
         x500Name = new X500Name(dato);
         certReqInfo = createCertificationRequestInfo(x500Name, keypair.getPublic());
