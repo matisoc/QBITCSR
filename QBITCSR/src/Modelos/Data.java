@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.LinkedList;
 
 public class Data 
 {
@@ -95,38 +96,42 @@ public class Data
 	    }  
 		
 	
-	public Object[] refreshTable () throws ClassNotFoundException, SQLException
+	public LinkedList <Object[]> refreshTable () throws ClassNotFoundException, SQLException
 	{
 		Class.forName("org.sqlite.JDBC");
 		c = DriverManager.getConnection("jdbc:sqlite:" + filedb);
 		stmt = c.createStatement();  
 		rs = stmt.executeQuery(
 				"select id, compania, vencimiento,"
-				+ "	case when kpv is null then '0' else '1' end as KPV_Bit "
+				+"	case when kpv is null then '0' else '1' end as KPV_Bit "
 				+ "from bsp ORDER BY ID DESC");
 				
 		java.sql.ResultSetMetaData rsmd = rs.getMetaData();
 		int colNo = rsmd.getColumnCount();
-		Object[] objects = null;
+		LinkedList <Object[]> linkedlist = new LinkedList<Object[]>();
+		
 		while(rs.next())
 		{
-			objects = new Object[colNo];
+			Object[] objects = new Object[colNo];
 			for(int i=0;i<colNo;i++)
 			{
 				switch(i)
 				{
-					case 3:  objects[i] = rs.getObject(i+1).toString().equals("0") ? Boolean.FALSE : Boolean.TRUE;
-							 break;
+					case 3: objects[i]= rs.getObject(i+1).toString().equals("0") ? Boolean.FALSE : Boolean.TRUE;  
+							break;
+					case 4: objects[i]= rs.getObject(i+1).toString().equals("0") ? Boolean.FALSE : Boolean.TRUE;  
+							break;
+					case 5: objects[i]= rs.getObject(i+1).toString().equals("0") ? Boolean.FALSE : Boolean.TRUE;  
+							break;
 					default: objects[i]= rs.getObject(i+1);
-							 break;
-	
+							break;
 				}
 				
-				
+		
 			}
+			linkedlist.add(objects);	
 		}
-		return objects;
-	
+		return linkedlist;
 	}
 	
 	

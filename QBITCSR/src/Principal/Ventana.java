@@ -8,6 +8,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.awt.BorderLayout;
 
 import java.awt.event.ActionEvent;
@@ -90,15 +91,13 @@ public class Ventana extends JFrame implements ActionListener
 	    table = new JTable();
 	    table.setModel(actualizarTabla());
 	    
-	    DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+
 	    TableColumnModel columnModel = table.getColumnModel();
-	    centerRenderer.setHorizontalAlignment( JLabel.CENTER );
-	    table.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+	   
 	    
 	    columnModel.getColumn(0).setPreferredWidth(26);
 	    columnModel.getColumn(1).setPreferredWidth(200);
 	    columnModel.getColumn(2).setPreferredWidth(60);
-	    table.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
 	    columnModel.getColumn(3).setPreferredWidth(35);
 	    columnModel.getColumn(4).setPreferredWidth(35);
 	    columnModel.getColumn(5).setPreferredWidth(35);
@@ -158,20 +157,20 @@ public class Ventana extends JFrame implements ActionListener
 	    	            public Class<?> getColumnClass(int column) {
 	    	                switch (column) 
 	    	                {
+	    	                	case 0: return Object.class;
+	    	                	case 1: return Object.class;
+	    	                	case 2: return Object.class;	
 	    	                    case 3:	return Boolean.class;
-	    	                    case 4: return Boolean.class;
-	    	                    case 5: return Boolean.class;
-	    	                    case 6: return Boolean.class;
+	    	                    case 4:	return Boolean.class;
 	    	                    default: return Object.class;
 	    	                }
 	    	            }
-	    			
-	    			
+
 				};
 	
-
-		aModel.addRow(sql.refreshTable());
-		
+			
+		LinkedList <Object[]> linkedlist = sql.refreshTable();
+		for(Object [] row : linkedlist)aModel.addRow(row);
 		return aModel;
     }
     
@@ -190,7 +189,6 @@ public class Ventana extends JFrame implements ActionListener
 			}
     		
     		dlg_Op1.setVisible(true);
-    		
     		try
     		{
     			table.setModel(actualizarTabla());
