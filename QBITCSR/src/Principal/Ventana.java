@@ -7,11 +7,15 @@ import java.security.InvalidKeyException;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
+import java.sql.SQLException;
 import java.awt.BorderLayout;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 
 import com.sun.glass.events.KeyEvent;
 
@@ -84,13 +88,24 @@ public class Ventana extends JFrame implements ActionListener
 	    //Tabla y ScrollPane
 	    scrollPane = new JScrollPane();
 	    table = new JTable();
-	    table.setModel(sql.select());
+	    table.setModel(actualizarTabla());
 	    
-	    table.setDefaultRenderer(Object.class, new Render());
-
+	    DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+	    TableColumnModel columnModel = table.getColumnModel();
+	    centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+	    table.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+	    
+	    columnModel.getColumn(0).setPreferredWidth(26);
+	    columnModel.getColumn(1).setPreferredWidth(200);
+	    columnModel.getColumn(2).setPreferredWidth(60);
+	    table.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
+	    columnModel.getColumn(3).setPreferredWidth(35);
+	    columnModel.getColumn(4).setPreferredWidth(35);
+	    columnModel.getColumn(5).setPreferredWidth(35);
 	
 	    scrollPane.setViewportView(table);
 	    getContentPane().add(scrollPane, BorderLayout.CENTER);
+	    
 	    
 	    //Acciones de la tabla (Key & Mouse)
         table.addKeyListener(new java.awt.event.KeyAdapter() 
@@ -122,6 +137,45 @@ public class Ventana extends JFrame implements ActionListener
         
     }
     
+    private DefaultTableModel actualizarTabla () throws ClassNotFoundException, SQLException
+    {
+    	
+		String[] columnNames = { 
+								"ID",
+								"Compañia",
+								"Vencimiento",
+								"CSR Bit",
+								"CRT Bit",
+								"P12 Bit"};
+		
+		DefaultTableModel aModel =  
+				new DefaultTableModel(columnNames, 0)
+				{
+	    			private static final long serialVersionUID = 1L;
+	    			public boolean isCellEditable(int row, int column) {return false;}
+	    			
+	    			 @Override
+	    	            public Class<?> getColumnClass(int column) {
+	    	                switch (column) 
+	    	                {
+	    	                    case 3:	return Boolean.class;
+	    	                    case 4: return Boolean.class;
+	    	                    case 5: return Boolean.class;
+	    	                    case 6: return Boolean.class;
+	    	                    default: return Object.class;
+	    	                }
+	    	            }
+	    			
+	    			
+				};
+	
+
+		aModel.addRow(sql.refreshTable());
+		
+		return aModel;
+    }
+    
+
 	public void actionPerformed(ActionEvent e) 
 	{ 
     	if(e.getSource()==btn_Op1)
@@ -139,7 +193,7 @@ public class Ventana extends JFrame implements ActionListener
     		
     		try
     		{
-    			table.setModel(sql.select());
+    			table.setModel(actualizarTabla());
     			
     		}
     		catch ( Exception e1)

@@ -10,10 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.swing.table.DefaultTableModel;
-
-
-//https://github.com/xerial/sqlite-jdbc
 
 public class Data 
 {
@@ -99,38 +95,41 @@ public class Data
 	    }  
 		
 	
-	
-	
-	
-	
-	public DefaultTableModel select () throws ClassNotFoundException, SQLException
+	public Object[] refreshTable () throws ClassNotFoundException, SQLException
 	{
-
 		Class.forName("org.sqlite.JDBC");
 		c = DriverManager.getConnection("jdbc:sqlite:" + filedb);
 		stmt = c.createStatement();  
-		rs = stmt.executeQuery("select ID, COMPANIA,VENCIMIENTO from bsp ORDER BY ID DESC;");
-		String[] columnNames = { "ID", "Compañia", "Vencimiento", "Estado" };
-		DefaultTableModel aModel =  
-				new DefaultTableModel(columnNames, 0)
-				{
-	    			private static final long serialVersionUID = 1L;
-	    			public boolean isCellEditable(int row, int column) {return false;}
-				};
-	
+		rs = stmt.executeQuery(
+				"select id, compania, vencimiento,"
+				+ "	case when kpv is null then '0' else '1' end as KPV_Bit "
+				+ "from bsp ORDER BY ID DESC");
+				
 		java.sql.ResultSetMetaData rsmd = rs.getMetaData();
 		int colNo = rsmd.getColumnCount();
+		Object[] objects = null;
 		while(rs.next())
 		{
-			Object[] objects = new Object[colNo];
-			for(int i=0;i<colNo;i++){
-			objects[i]=rs.getObject(i+1);
+			objects = new Object[colNo];
+			for(int i=0;i<colNo;i++)
+			{
+				switch(i)
+				{
+					case 3:  objects[i] = rs.getObject(i+1).toString().equals("0") ? Boolean.FALSE : Boolean.TRUE;
+							 break;
+					default: objects[i]= rs.getObject(i+1);
+							 break;
+	
+				}
+				
+				
+			}
 		}
-		aModel.addRow(objects);
-		}
-		return aModel;
+		return objects;
+	
 	}
-
+	
+	
 	public void connect() throws IOException, Exception 
 	{
 		Class.forName("org.sqlite.JDBC");
@@ -162,11 +161,11 @@ public class Data
 			System.out.println("Se creo el archivo y la tabla........"+"\n");		
 		}	
 	}
+	
 	public void grabar ( String compania, String DEM, String KPV) throws ClassNotFoundException, SQLException
 	{
 		Class.forName("org.sqlite.JDBC");
 		c = DriverManager.getConnection("jdbc:sqlite:" + filedb);
-		//stmt = c.createStatement();
 
 	    String query= "insert into BSP (COMPANIA, PEM, KPV) "
     				+ "values (?, ?, ?)";
