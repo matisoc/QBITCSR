@@ -1,20 +1,31 @@
 package Principal;
 
 import java.awt.*;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
+import java.sql.SQLException;
+import java.util.LinkedList;
+
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import com.sun.glass.ui.Clipboard;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import javax.swing.*;
 import static javax.swing.JOptionPane.*;
 import Modelos.CUIT;
+import Modelos.Data;
 import Modelos.PEM;
 
-public class Dialogo extends JDialog 
+public class Dialogo extends JDialog  
 {
 	
 	private static final long serialVersionUID = 1L;
@@ -30,8 +41,16 @@ public class Dialogo extends JDialog
 	    	case 2: instructivoAFIP();
 	    	case 3: generarP12();
 	    }
+	}
+	public Dialogo(JFrame owner, String title, Object ID) throws ClassNotFoundException, SQLException  
+	{
+		super(owner, title, true);
+	    setResizable(false);
+	    setTitle(title);
+	    getDetails(ID);
 	
 	}
+	
 	private void generarCSR() throws IOException, InvalidKeyException, SignatureException, NoSuchAlgorithmException
 	{
 		setSize(530,250);
@@ -172,5 +191,104 @@ public class Dialogo extends JDialog
 	{
 		
 	}
+	
+	private void getDetails(Object data) throws ClassNotFoundException, SQLException
+	{
+		Data sql = new Data();
+		setSize(530,270);
+		setLayout(new BorderLayout());
+		setLocationRelativeTo(null);
+		JTabbedPane jtp_detail = new JTabbedPane();
+		getContentPane().add(jtp_detail);
+		
+		JPanel panel_KPV = new JPanel();
+		jtp_detail.addTab("Private Key", panel_KPV);
+		
+		JTextArea KPV = new JTextArea(10,45);
+		KPV.setLineWrap(true);
+		KPV.setEditable(false);
+		KPV.setWrapStyleWord(true);
+		JScrollPane scroll_KPV = new JScrollPane(KPV);
+	    KPV.setText(sql.blobToString((int)data,0));
+	    panel_KPV.add(scroll_KPV);
+	    
+	    JButton btn_KPV = new JButton("Exportar Private Key");
+        panel_KPV.add(btn_KPV);
+	   
+		
+		
+        JPanel panel_KPB = new JPanel();
+        jtp_detail.addTab("Public Key", panel_KPB);
+    	JTextArea KPB = new JTextArea(10,45);
+    	KPB.setLineWrap(true);
+    	KPB.setEditable(false);
+    	KPB.setWrapStyleWord(true);
+		JScrollPane scroll_KPB = new JScrollPane(KPB);
+		KPB.setText(sql.blobToString((int)data,1));
+	    panel_KPB.add(scroll_KPB);
+	    
+	    JButton btn_KPB = new JButton("Exportar Public Key");
+        panel_KPB.add(btn_KPB);
+
+
+        JPanel panel_PEM = new JPanel();
+        jtp_detail.addTab("Peticion de cert.", panel_PEM);
+        
+    	JTextArea PEM = new JTextArea(10,45);
+    	PEM.setLineWrap(true);
+    	PEM.setEditable(false);
+    	PEM.setWrapStyleWord(true);
+		JScrollPane scroll_PEM = new JScrollPane(PEM);
+		PEM.setText(sql.blobToString((int)data,2));
+		panel_PEM.add(scroll_PEM);
+		
+		JButton btn_PEM = new JButton("Exportar CSR");
+        panel_PEM.add(btn_PEM);
+        
+  
+        JPanel panel_CRT = new JPanel();
+        jtp_detail.addTab("Certificado", panel_CRT);
+        JPanel panel_P12 = new JPanel();
+        jtp_detail.addTab("Certificado PKCS12", panel_P12);
+        
+      
+        
+        
+        
+//        jp1.add(label1);
+  //      jp2.add(label2);
+        
+		
+		
+		/*JPanel p = new JPanel();
+		setContentPane(p);
+		
+			
+        p.setLayout(null);
+        JLabel companyLabel = new JLabel("Razon Social");
+        companyLabel.setBounds(10, 10, 80, 25);
+        p.add(companyLabel);
+        
+     
+        JButton KPV = new JButton("Exportar Private Key");
+        KPV.setBounds(10, 40, 300, 25);
+        p.add(KPV);
+        JButton KPB = new JButton("Exportar Public Key");
+        KPB.setBounds(10, 70, 300, 25);
+        p.add(KPB);
+        JButton CSR = new JButton("Exportar CSR");
+        CSR.setBounds(10, 100, 300, 25);
+        p.add(CSR);
+        JButton CRT = new JButton("Exportar CRT");
+        CRT.setBounds(10, 130, 300, 25);
+        p.add(CRT);
+        JButton P12 = new JButton("Exportar P12");
+        P12.setBounds(10, 160, 300, 25);
+        p.add(P12);
+   */
+		
+	}
+	   
+	
 
 }

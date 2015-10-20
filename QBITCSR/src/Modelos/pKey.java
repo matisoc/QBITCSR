@@ -61,9 +61,13 @@ public class pKey
  
 	public String getKey (int tipo)
 	{
-		if(tipo == 1)return this.privateKey;
+		return (tipo == 1) ? this.privateKey : (tipo == 2) ? this.publicKey : null ;
+			
+				//this.publicKey;
+		
+		/*if(tipo == 1)return this.privateKey;
 		else if(tipo == 2) return this.publicKey;
-		else return null;	
+		else return null;	*/
 	}
 	
     private static SecureRandom createFixedRandom()

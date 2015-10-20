@@ -57,7 +57,7 @@ public class PEM {
          {
             writeToFile(csrDEREncoded, archivo+".der");
             writeToFile(csrPEMEncoded.getBytes(), archivo+".pem");
-            insertRow(compania, csrPEMEncoded.toString(), clave.getKey(1));            
+            insertRow(compania, clave.getKey(1), clave.getKey(2), csrPEMEncoded.toString());   
             return true;
          } 
          catch (Exception e) 
@@ -102,10 +102,10 @@ public class PEM {
         return der22.toByteArray();
     }
     
-    private void insertRow(final String compania, final String PEM, final String KPV) throws SQLException, ClassNotFoundException
+    private void insertRow(final String compania,  final String KPV, final String KPB , final String PEM) throws SQLException, ClassNotFoundException
     {
     	sql = new Data();
-    	sql.grabar(compania, PEM, KPV);
+    	sql.grabar(compania, KPV, KPB, PEM);
     }
 
     private static void writeToFile(byte[] data, String file) throws FileNotFoundException, IOException 

@@ -14,7 +14,6 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
@@ -28,7 +27,7 @@ public class Ventana extends JFrame implements ActionListener
 {
 	private static final long serialVersionUID = 1L;
 	private Data sql;
-    private Dialogo dlg_Op1, dlg_Op2, dlg_Op3;
+    private Dialogo dlg_Op1, dlg_Op2, dlg_Op3, details;
     private JToolBar toolBar;
     private JButton btn_Op1, btn_Op2,btn_Op3,btn_Exit;
     private JPopupMenu ppu_Table;
@@ -90,17 +89,13 @@ public class Ventana extends JFrame implements ActionListener
 	    scrollPane = new JScrollPane();
 	    table = new JTable();
 	    table.setModel(actualizarTabla());
-	    
-
 	    TableColumnModel columnModel = table.getColumnModel();
-	   
-	    
-	    columnModel.getColumn(0).setPreferredWidth(26);
-	    columnModel.getColumn(1).setPreferredWidth(200);
-	    columnModel.getColumn(2).setPreferredWidth(60);
-	    columnModel.getColumn(3).setPreferredWidth(35);
-	    columnModel.getColumn(4).setPreferredWidth(35);
-	    columnModel.getColumn(5).setPreferredWidth(35);
+	    columnModel.getColumn(0).setPreferredWidth(20);
+	    columnModel.getColumn(1).setPreferredWidth(220);
+	    columnModel.getColumn(2).setPreferredWidth(65);
+	    columnModel.getColumn(3).setPreferredWidth(30);
+	    columnModel.getColumn(4).setPreferredWidth(30);
+	    columnModel.getColumn(5).setPreferredWidth(30);
 	
 	    scrollPane.setViewportView(table);
 	    getContentPane().add(scrollPane, BorderLayout.CENTER);
@@ -129,7 +124,8 @@ public class Ventana extends JFrame implements ActionListener
           			ListSelectionModel model = table.getSelectionModel();
         			model.setSelectionInterval( rowNumber, rowNumber );
         			ppu_Table.show(e.getComponent(), e.getX(), e.getY());
-
+        			
+        			
         		}
         	}
         });
@@ -143,9 +139,9 @@ public class Ventana extends JFrame implements ActionListener
 								"ID",
 								"Compañia",
 								"Vencimiento",
-								"CSR Bit",
-								"CRT Bit",
-								"P12 Bit"};
+								"CSR",
+								"CRT",
+								"P12"};
 		
 		DefaultTableModel aModel =  
 				new DefaultTableModel(columnNames, 0)
@@ -162,6 +158,7 @@ public class Ventana extends JFrame implements ActionListener
 	    	                	case 2: return Object.class;	
 	    	                    case 3:	return Boolean.class;
 	    	                    case 4:	return Boolean.class;
+	    	                    case 5:	return Boolean.class;
 	    	                    default: return Object.class;
 	    	                }
 	    	            }
@@ -229,6 +226,28 @@ public class Ventana extends JFrame implements ActionListener
     	{ 
     		System.exit(0);
     	}
+    	
+    	else if (e.getSource()==ppu_Table_Item)
+    	{ 
+    		
+    		Object ID = (int) table.getValueAt(table.getSelectedRow(), 0);
+    		try { 
+				details = new Dialogo (this, "Detalle de registro (ID = " 
+							+ String.valueOf(table.getValueAt(table.getSelectedRow(), 0)) +
+							" | Compañia: " + table.getValueAt(table.getSelectedRow(), 1) +
+							")"
+							, ID);
+			} catch (ClassNotFoundException | SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+    		details.setVisible(true);
+    		
+    		
+    	}
+    	
+   
+    	
     		else {}
     }  
        

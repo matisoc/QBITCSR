@@ -37,42 +37,66 @@ public class Data
 	                   "(ID INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL," +
 	                   " COMPANIA       VARCHAR(100)    NOT NULL, " + 
 	                   " VENCIMIENTO    DATE     , " + 
-	                   " PEM        	TEXT	NOT NULL, " + 
 	                   " KPV            BLOB	NOT NULL, " +
-	                   " P12			TEXT"+ ")"; 
+	                   " KPB            BLOB	NOT NULL, " +
+	                   " PEM            BLOB	NOT NULL, " +
+	                   " CRT            BLOB	, " + 
+	                   " P12			BLOB"+ ")"; 
 	      stmt.executeUpdate(sql);
 	      stmt.close();
 	      c.close();	
-		
 	}
 	
 
-	public void update(String compania, String PEM, String KPV) throws ClassNotFoundException, SQLException
+	public void update(String compania, String KPV, String KPB, String PEM) throws ClassNotFoundException, SQLException
 	{
 		Class.forName("org.sqlite.JDBC");
 		c = DriverManager.getConnection("jdbc:sqlite:" + filedb);
 		stmt = c.createStatement();
-	    String query = "insert into BSP (COMPANIA, PEM, KPV) "
-	    				+ "values ('" + compania + "','" + PEM + "','"+ KPV + "')";
-	
+	    String query = "insert into BSP (COMPANIA, KPV, KPB, PEM) "
+	    		+ "values ('" + compania + "','" + KPV + "','"+ KPB + "','" + PEM + "')";
 		stmt.executeQuery(query);    	    
 	}
-	
 
-	public boolean getKey (int id) throws ClassNotFoundException, SQLException
+	
+	
+	
+	
+	public boolean blobToFile (int id, int type, String path) throws ClassNotFoundException, SQLException
 	{
-		
 		Class.forName("org.sqlite.JDBC");
 		c = DriverManager.getConnection("jdbc:sqlite:" + filedb);
-		String query="select KPV from BSP where ID='"+id+"'";  
+		String query = null;
+		byte[] fileArray = null;
+		switch(type)
+		{
+			case 0:	query="select KPV from BSP where ID='"+id+"'";
+			case 1: query="select KPB from BSP where ID='"+id+"'";
+			case 2: query="select PEM from BSP where ID='"+id+"'";
+			case 3: query="select CRT from BSP where ID='"+id+"'";
+			case 4: query="select P12 from BSP where ID='"+id+"'";
+		}
+		
 		stmt = c.createStatement();
 		try
 		{   
 			ResultSet rslt=stmt.executeQuery(query);  
 	        if(rslt.next())
 	        {  
-	        	byte[] fileArray=rslt.getBytes("KPV");  
-	        	FileOutputStream fos = new FileOutputStream(new File("c:\\aTunes\\clave.key"));
+	        	switch(type)
+	        	{
+					case 0:	fileArray=rslt.getBytes("KPV");
+							break;
+					case 1: fileArray=rslt.getBytes("KPB");
+							break;
+					case 2: fileArray=rslt.getBytes("PEM");
+							break;
+					case 3: fileArray=rslt.getBytes("CRT");
+							break;
+					case 4: fileArray=rslt.getBytes("P12");
+							break;
+	        	}
+	        	FileOutputStream fos = new FileOutputStream(new File(path));
 	        	fos.write(fileArray);
 	        	fos.close();
 	        	return true;
@@ -95,6 +119,52 @@ public class Data
 	        return true;  
 	    }  
 		
+
+	public String blobToString (int id, int type) throws ClassNotFoundException, SQLException
+	{
+		Class.forName("org.sqlite.JDBC");
+		c = DriverManager.getConnection("jdbc:sqlite:" + filedb);
+		String query = null, ret = null;
+		byte[] fileArray = null;
+		stmt = c.createStatement();
+		query="select KPV,KPB,PEM,CRT,P12 from BSP where ID='"+id+"'";
+		try
+		{   
+			ResultSet rslt=stmt.executeQuery(query);  
+	        if(rslt.next())
+	        {  
+	        	switch(type)
+	        	{
+					case 0:	fileArray=rslt.getBytes("KPV");
+							break;
+					case 1: fileArray=rslt.getBytes("KPB");
+							break;
+					case 2: fileArray=rslt.getBytes("PEM");
+							break;
+					case 3: fileArray=rslt.getBytes("CRT");
+							break;
+					case 4: fileArray=rslt.getBytes("P12");
+							break;
+	        	}
+	        	ret= new String(fileArray, StandardCharsets.UTF_8);
+	        }  
+	        rslt.close();  
+
+	        }catch(Exception e){  
+	            e.printStackTrace();
+	            return null;
+	        }finally{  
+	            try {  
+	                c.close();  
+	                stmt.close();
+	                
+	            } catch (Exception e) {  
+	            }  
+	        }  
+	          
+	        return ret;  
+	    }  
+		
 	
 	public LinkedList <Object[]> refreshTable () throws ClassNotFoundException, SQLException
 	{
@@ -103,7 +173,9 @@ public class Data
 		stmt = c.createStatement();  
 		rs = stmt.executeQuery(
 				"select id, compania, vencimiento,"
-				+"	case when kpv is null then '0' else '1' end as KPV_Bit "
+				+"	case when PEM is null then '0' else '1' end as PEM_Bit, "
+				+"	case when CRT is null then '0' else '1' end as CRT_Bit, "
+				+"	case when P12 is null then '0' else '1' end as P12_Bit "
 				+ "from bsp ORDER BY ID DESC");
 				
 		java.sql.ResultSetMetaData rsmd = rs.getMetaData();
@@ -123,11 +195,11 @@ public class Data
 							break;
 					case 5: objects[i]= rs.getObject(i+1).toString().equals("0") ? Boolean.FALSE : Boolean.TRUE;  
 							break;
+					
 					default: objects[i]= rs.getObject(i+1);
 							break;
 				}
-				
-		
+
 			}
 			linkedlist.add(objects);	
 		}
@@ -167,24 +239,29 @@ public class Data
 		}	
 	}
 	
-	public void grabar ( String compania, String DEM, String KPV) throws ClassNotFoundException, SQLException
+	public void grabar ( String compania, String KPV, String KPB, String PEM) throws ClassNotFoundException, SQLException
 	{
 		Class.forName("org.sqlite.JDBC");
 		c = DriverManager.getConnection("jdbc:sqlite:" + filedb);
 
-	    String query= "insert into BSP (COMPANIA, PEM, KPV) "
-    				+ "values (?, ?, ?)";
-	        		
+	    String query= "insert into BSP (COMPANIA, KPV, KPB, PEM) "
+    				+ "values (?, ?, ?, ?)";
+       		
 	    PreparedStatement prepStmt=null;  
 	    try
 	    {  
 	    	c.setAutoCommit(false);  
 	        prepStmt=c.prepareStatement(query);  
 	        prepStmt.setString(1, compania);  
-	        prepStmt.setString(2, DEM);  
-	              
+
 	        byte[] prikey=KPV.getBytes(StandardCharsets.UTF_8); 
-	        prepStmt.setBytes(3, prikey);  
+	        prepStmt.setBytes(2, prikey);
+	        
+	        byte[] pubkey=KPB.getBytes(StandardCharsets.UTF_8); 
+	        prepStmt.setBytes(3, pubkey);
+	        
+	        byte[] pem=PEM.getBytes(StandardCharsets.UTF_8); 
+	        prepStmt.setBytes(4, pem);  
 	              
 	        prepStmt.executeUpdate();  
 	        c.commit();  

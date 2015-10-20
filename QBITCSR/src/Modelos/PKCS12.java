@@ -34,7 +34,7 @@ public class PKCS12 {
 		this.certFilename = "C:\\aTunes\\p2.crt";
 		query = new Data();
 	}
-
+/*
 	public void hacer() throws CertificateException, KeyStoreException, NoSuchAlgorithmException, IOException
 	{
 		try {
@@ -55,7 +55,7 @@ public class PKCS12 {
 		}
 
 	}
-	
+	*/
 	public void getKey(String id) throws CertificateException,IOException, NumberFormatException, ClassNotFoundException, SQLException 
 	{
 	 	//Reader stringToReader = new StringReader(query.getKey(Integer.parseInt(id)));
