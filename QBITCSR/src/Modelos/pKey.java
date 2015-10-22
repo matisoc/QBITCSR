@@ -17,20 +17,11 @@ public class pKey
 	public pKey()
 	{
 		privateKey = "";
-		publicKey = "";
-		
+		publicKey = "";	
 	}
 	
 	public KeyPair generateKeyPair () 
     {
-		/*
-	    KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
-        keyGen.initialize(1024, new SecureRandom());
-        KeyPair keypair = keyGen.generateKeyPair(); 
-
-
-		 */
-
 		KeyPair pair = null;
 		try
 		{   
@@ -47,8 +38,11 @@ public class pKey
 			Key privKey = pair.getPrivate();
 			
 			
-			this.privateKey = b64.encode(privKey.getEncoded());
-			this.publicKey = b64.encode(pubKey.getEncoded());
+			this.publicKey = "-----BEGIN RSA PUBLIC KEY-----"+"\n"+b64.encode(pubKey.getEncoded())+"\n"+"-----END RSA PUBLIC KEY-----";						
+			this.privateKey ="-----BEGIN RSA PRIVATE KEY-----"+"\n"+b64.encode(privKey.getEncoded())+"\n"	+"-----END RSA PRIVATE KEY-----";
+								
+			System.out.println(publicKey);
+			System.out.println(privateKey);
 			return pair;
 
 		}
@@ -62,12 +56,6 @@ public class pKey
 	public String getKey (int tipo)
 	{
 		return (tipo == 1) ? this.privateKey : (tipo == 2) ? this.publicKey : null ;
-			
-				//this.publicKey;
-		
-		/*if(tipo == 1)return this.privateKey;
-		else if(tipo == 2) return this.publicKey;
-		else return null;	*/
 	}
 	
     private static SecureRandom createFixedRandom()
